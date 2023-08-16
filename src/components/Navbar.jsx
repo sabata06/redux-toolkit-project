@@ -5,15 +5,20 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { clearUser } from "../features/authSlice";
 
 export default function Navbar() {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
   // user bilgisini global stateden oku
-  const user = false;
-  const handleLogout = () =>{
+  const { user } = useSelector((state) => state.auth);
+  console.log(user);
+  const handleLogout = () => {
     //burada user state globalden boşaltılmalı
-    navigate("/login")
-  }
+    navigate("/login");
+    dispatch(clearUser())
+  };
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" color="secondary">
@@ -26,8 +31,16 @@ export default function Navbar() {
           >
             World News
           </Typography>
-          {user && <Button color="inherit" onClick={handleLogout}>Logout</Button>}
-          {!user && <Button color="inherit" onClick={() => navigate("/login")}>Login</Button>}
+          {user?.email && (
+            <Button color="inherit" onClick={handleLogout}>
+              Logout
+            </Button>
+          )}
+          {!user.email && (
+            <Button color="inherit" onClick={() => navigate("/login")}>
+              Login
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </Box>
